@@ -816,48 +816,168 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 camera.position.set(0, 0, 30);
 
-/* Particles — emerald green */
-const particleCount = 600;
-const positions = new Float32Array(particleCount * 3);
-const colors    = new Float32Array(particleCount * 3);
-const c1 = new THREE.Color(0x10b981); // emerald
-const c2 = new THREE.Color(0x34d399); // mint
-const c3 = new THREE.Color(0xdde4ff); // near-white
+/* Starfield — deep space stars */
+const starCount = 2000;
+const starPositions = new Float32Array(starCount * 3);
+const starColors = new Float32Array(starCount * 3);
+const starSizes = new Float32Array(starCount);
 
-for (let i = 0; i < particleCount; i++) {
-  positions[i*3]   = (Math.random()-.5)*140;
-  positions[i*3+1] = (Math.random()-.5)*140;
-  positions[i*3+2] = (Math.random()-.5)*80;
-  const r = Math.random();
-  const col = r < .35 ? c1 : r < .6 ? c2 : c3;
-  colors[i*3]=col.r; colors[i*3+1]=col.g; colors[i*3+2]=col.b;
+for (let i = 0; i < starCount; i++) {
+  starPositions[i*3]   = (Math.random() - 0.5) * 300;
+  starPositions[i*3+1] = (Math.random() - 0.5) * 300;
+  starPositions[i*3+2] = (Math.random() - 0.5) * 200 - 50;
+  
+  // Star colors: white, blue-white, warm white
+  const temp = Math.random();
+  if (temp < 0.6) {
+    starColors[i*3] = starColors[i*3+1] = starColors[i*3+2] = 1; // white
+  } else if (temp < 0.85) {
+    starColors[i*3] = 0.8; starColors[i*3+1] = 0.9; starColors[i*3+2] = 1; // blue-white
+  } else {
+    starColors[i*3] = 1; starColors[i*3+1] = 0.95; starColors[i*3+2] = 0.85; // warm
+  }
+  
+  starSizes[i] = Math.random() * 1.2 + 0.3;
 }
 
-const geo = new THREE.BufferGeometry();
-geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
 
-const mat = new THREE.PointsMaterial({
-  size: 0.55, vertexColors: true,
-  transparent: true, opacity: 0.75,
-  blending: THREE.AdditiveBlending, depthWrite: false
+const starMat = new THREE.PointsMaterial({
+  size: 0.8,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.9,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  sizeAttenuation: true
 });
 
-const particles = new THREE.Points(geo, mat);
-scene.add(particles);
+const stars = new THREE.Points(starGeo, starMat);
+scene.add(stars);
 
-/* Grid */
-const grid = new THREE.GridHelper(100, 40, 0x10b981, 0x1a1e2e);
-grid.position.y = -20;
-grid.material.opacity = 0.08;
-grid.material.transparent = true;
-scene.add(grid);
+/* Galaxy Nebula Clouds */
+const nebulaCount = 800;
+const nebulaPositions = new Float32Array(nebulaCount * 3);
+const nebulaColors = new Float32Array(nebulaCount * 3);
+const nebulaSizes = new Float32Array(nebulaCount);
+
+const nebulaColor1 = new THREE.Color(0x10b981); // emerald
+const nebulaColor2 = new THREE.Color(0x34d399); // mint
+const nebulaColor3 = new THREE.Color(0x6366f1); // indigo
+const nebulaColor4 = new THREE.Color(0x8b5cf6); // purple
+
+for (let i = 0; i < nebulaCount; i++) {
+  // Cluster nebula particles
+  const angle = Math.random() * Math.PI * 2;
+  const radius = Math.random() * 60 + 20;
+  nebulaPositions[i*3]   = Math.cos(angle) * radius + (Math.random() - 0.5) * 40;
+  nebulaPositions[i*3+1] = Math.sin(angle) * radius * 0.3 + (Math.random() - 0.5) * 40;
+  nebulaPositions[i*3+2] = (Math.random() - 0.5) * 60 - 30;
+  
+  // Mix colors for galaxy effect
+  const colorChoice = Math.random();
+  let col;
+  if (colorChoice < 0.4) col = nebulaColor1;
+  else if (colorChoice < 0.7) col = nebulaColor2;
+  else if (colorChoice < 0.85) col = nebulaColor3;
+  else col = nebulaColor4;
+  
+  nebulaColors[i*3] = col.r;
+  nebulaColors[i*3+1] = col.g;
+  nebulaColors[i*3+2] = col.b;
+  
+  nebulaSizes[i] = Math.random() * 3 + 1;
+}
+
+const nebulaGeo = new THREE.BufferGeometry();
+nebulaGeo.setAttribute('position', new THREE.BufferAttribute(nebulaPositions, 3));
+nebulaGeo.setAttribute('color', new THREE.BufferAttribute(nebulaColors, 3));
+nebulaGeo.setAttribute('size', new THREE.BufferAttribute(nebulaSizes, 1));
+
+const nebulaMat = new THREE.PointsMaterial({
+  size: 2.5,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.4,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  sizeAttenuation: true
+});
+
+const nebula = new THREE.Points(nebulaGeo, nebulaMat);
+scene.add(nebula);
+
+/* Shooting Stars */
+class ShootingStar {
+  constructor() {
+    this.reset();
+    const geometry = new THREE.BufferGeometry();
+    const material = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending
+    });
+    this.line = new THREE.Line(geometry, material);
+    scene.add(this.line);
+  }
+  
+  reset() {
+    this.x = (Math.random() - 0.5) * 200;
+    this.y = Math.random() * 100 + 50;
+    this.z = (Math.random() - 0.5) * 100;
+    this.vx = (Math.random() - 0.7) * 2;
+    this.vy = -(Math.random() * 1.5 + 1);
+    this.vz = (Math.random() - 0.5) * 0.5;
+    this.length = Math.random() * 15 + 10;
+    this.life = 1;
+    this.active = true;
+  }
+  
+  update() {
+    if (!this.active) return;
+    
+    this.x += this.vx;
+    this.y += this.vy;
+    this.z += this.vz;
+    this.life -= 0.012;
+    
+    if (this.life <= 0) {
+      this.active = false;
+      this.line.visible = false;
+      return;
+    }
+    
+    const positions = new Float32Array([
+      this.x, this.y, this.z,
+      this.x - this.vx * this.length, this.y - this.vy * this.length, this.z - this.vz * this.length
+    ]);
+    
+    this.line.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.line.material.opacity = this.life * 0.8;
+    this.line.visible = true;
+  }
+}
+
+const shootingStars = [];
+for (let i = 0; i < 5; i++) {
+  shootingStars.push(new ShootingStar());
+}
+
+let shootingStarTimer = 0;
 
 /* Lights */
-scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-const pLight = new THREE.PointLight(0x10b981, 2, 100);
-pLight.position.set(10, 10, 10);
+scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+const pLight = new THREE.PointLight(0x10b981, 1.5, 150);
+pLight.position.set(20, 20, 20);
 scene.add(pLight);
+
+const pLight2 = new THREE.PointLight(0x6366f1, 1, 120);
+pLight2.position.set(-30, -10, 10);
+scene.add(pLight2);
 
 /* Scroll */
 let scrollY = window.scrollY;
@@ -870,11 +990,33 @@ window.addEventListener('scroll', () => {
 function animate() {
   requestAnimationFrame(animate);
   const p = scrollY / docH;
-  particles.rotation.y += 0.0003;
-  particles.rotation.x = Math.sin(Date.now() * 0.0001) * 0.05;
-  camera.position.z = 30 - p * 20;
-  camera.position.y = p * -10;
-  camera.rotation.x = p * 0.3;
+  const time = Date.now() * 0.0001;
+  
+  // Rotate starfield slowly
+  stars.rotation.y += 0.00015;
+  stars.rotation.x = Math.sin(time) * 0.02;
+  
+  // Rotate nebula
+  nebula.rotation.y += 0.0004;
+  nebula.rotation.z = Math.sin(time * 0.5) * 0.05;
+  
+  // Update shooting stars
+  shootingStarTimer++;
+  if (shootingStarTimer > 60) {
+    const inactiveStar = shootingStars.find(s => !s.active);
+    if (inactiveStar && Math.random() > 0.7) {
+      inactiveStar.reset();
+      shootingStarTimer = 0;
+    }
+  }
+  
+  shootingStars.forEach(star => star.update());
+  
+  // Camera movement
+  camera.position.z = 30 - p * 15;
+  camera.position.y = p * -8;
+  camera.rotation.x = p * 0.2;
+  
   renderer.render(scene, camera);
 }
 animate();
