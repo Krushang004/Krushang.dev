@@ -1,186 +1,69 @@
-# Krushang Prajapati - Portfolio Website
+# Krushang Prajapati — Portfolio
 
-A modern, responsive portfolio website showcasing my skills, projects, and experience as a Full Stack Developer.
+Personal portfolio of an Electronics & Communication Engineering student at SCET, Surat, focused on FPGA/VLSI design and embedded systems, with full-stack and AI side projects.
 
-## 🌟 Features
+**Live site:** https://krushang004.runs-on.dev
 
-- **Responsive Design** - Works perfectly on all devices (desktop, tablet, mobile)
-- **Modern UI/UX** - Clean, professional design with smooth animations
-- **Interactive Elements** - Hover effects, scroll animations, and smooth transitions
-- **Contact Form** - Functional contact form with validation
-- **Social Media Integration** - Direct links to GitHub, LinkedIn, X (Twitter), and Gmail
-- **Project Showcase** - Featured projects with GitHub links and live demos
-- **Skills Section** - Organized by Frontend, Backend, and Tools
-- **About Section** - Personal information with statistics
+## What's on the site
 
-## 🚀 Live Demo
+- **Hero** — photo, short intro and a terminal-style `profile.json` card with key stats and a Resume download.
+- **About** — background, the FPGA Design Challenge 2.0 win, and achievement badges.
+- **Skills** — grouped as HDL & FPGA, Embedded & Hardware, Programming, Web & Cloud, AI & Vision, and Tools.
+- **Projects** — FPGA image processing (flagship), cache controller, digital design lab, smart classroom IoT dashboard, offline AI assistant, HTTP honeypot, and Mindscape.
+- **Experience & Education** — freelance work, Google Student Ambassador, FPGA Design Challenge 2.0, IEEE/T&P volunteering, and the B.Tech at SCET.
+- **Contact** — email, GitHub and LinkedIn links.
 
-Visit the live website: [Your Portfolio URL]
+## Highlights
 
-## 📱 Screenshots
+- 🏆 1st place among 22 teams at FPGA Design Challenge 2.0 (SCET) — real-time image processing on a Basys 3 (Artix-7) board with 8 hardware filters, written in Verilog.
+- Direct-mapped, write-back cache controller in Verilog with a 5-state FSM, verified with a testbench.
+- ESP32-CAM AI motion detection with a Firebase dashboard, plus Python security and offline-AI tools.
 
-### Desktop View
-- Hero section with animated name highlight
-- Skills section with organized technology categories
-- Projects section with interactive cards
-- Contact form with validation
+## Tech
 
-### Mobile View
-- Responsive navigation with hamburger menu
-- Optimized layout for mobile devices
-- Touch-friendly interactions
+- Single static page: HTML, CSS and JavaScript are all inside `index.html`. `styles.css` and `script.js` are intentionally near-empty placeholders kept for GitHub Pages compatibility.
+- **Three.js** (loaded from a CDN via an import map) draws the starfield background and shooting stars.
+- **Fonts:** Space Grotesk, Orbitron and Inter from Google Fonts.
+- Responsive layout with a hamburger menu on small screens, and scroll-triggered reveals using `IntersectionObserver`.
+- Colour tokens are CSS variables at the top of `index.html` (dark background `#0f1419`, cyan accent `#00d4ff`).
 
-## 🛠️ Technologies Used
-
-### Frontend
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with Flexbox and Grid
-- **JavaScript** - Interactive functionality and animations
-- **Font Awesome** - Icons
-- **Google Fonts** - Poppins typography
-
-### Backend
-- **MongoDB** - Database
-- **Node.js** - Runtime environment
-- **Python** - Programming language
-- **Django** - Web framework
-
-### Tools & Others
-- **Git** - Version control
-- **AWS** - Cloud services
-- **Figma** - Design
-
-## 📁 Project Structure
+## Project structure
 
 ```
-portfolio/
-├── index.html          # Main HTML file
-├── styles.css          # CSS styles and animations
-├── script.js           # JavaScript functionality
-└── README.md           # Project documentation
+.
+├── index.html          # Markup, styles and scripts (everything lives here)
+├── avatar.png          # Hero photo
+├── resume.pdf          # Linked from the Resume button
+├── styles.css          # Placeholder (styles are embedded in index.html)
+├── script.js           # Placeholder (scripts are embedded in index.html)
+├── package-lock.json   # Empty lockfile; there are no npm dependencies
+└── README.md
 ```
 
-## 🚀 Getting Started
+## Run locally
 
-### Prerequisites
-- A modern web browser
-- No additional dependencies required
+There is no build step. Because the page loads Three.js as an ES module, serve it over HTTP instead of opening the file directly:
 
-### Installation
+```bash
+# Python
+python -m http.server 8000
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Krushang004/your-portfolio-repo.git
-   cd your-portfolio-repo
-   ```
+# or Node.js
+npx http-server
+```
 
-2. **Open the project**
-   - Simply open `index.html` in your web browser
-   - Or use a local development server:
-     ```bash
-     # Using Python
-     python -m http.server 8000
-     
-     # Using Node.js
-     npx http-server
-     
-     # Using Live Server (VS Code extension)
-     Right-click on index.html → "Open with Live Server"
-     ```
+Then open http://localhost:8000.
 
-3. **Customize the content**
-   - Update personal information in `index.html`
-   - Modify colors and styles in `styles.css`
-   - Add your own projects and skills
+## Updating the content
 
-## ✨ Key Features Explained
+- **Projects, skills, timeline:** edit the matching sections in `index.html` (`#projects`, `#skills`, `#experience`).
+- **Resume:** replace `resume.pdf` with the new file under the same name.
+- **Photo:** replace `avatar.png`.
+- **Link preview:** the canonical URL and Open Graph tags are in the `<head>` of `index.html`; update them if the domain changes.
 
-### Hero Section
-- Animated name highlight with underline effect
-- Call-to-action buttons
-- Social media links with hover effects
-- Responsive layout
+## Contact
 
-### Projects Section
-- Interactive project cards with hover animations
-- GitHub links for each project
-- Technology tags for each project
-- Staggered entrance animations
-
-### Skills Section
-- Organized by categories (Frontend, Backend, Tools)
-- Animated skill tags
-- Hover effects and transitions
-
-### Contact Section
-- Functional contact form with validation
-- Contact information display
-- Email integration with Gmail
-
-## 🎨 Customization
-
-### Colors
-The website uses a modern color palette:
-- Primary: `#2563eb` (Blue)
-- Secondary: `#fbbf24` (Yellow/Gold)
-- Gradient: `#667eea` to `#764ba2`
-- Text: `#1f2937` (Dark Gray)
-
-### Fonts
-- Primary: Poppins (Google Fonts)
-- Fallback: Sans-serif
-
-### Animations
-- Smooth scroll behavior
-- Hover effects on interactive elements
-- Entrance animations for sections
-- Typing animation for hero title
-
-## 📱 Responsive Design
-
-The website is fully responsive and optimized for:
-- **Desktop** (1200px+)
-- **Tablet** (768px - 1199px)
-- **Mobile** (320px - 767px)
-
-## 🔧 Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👨‍💻 Author
-
-**Krushang Prajapati**
+- Email: krushangrprajapati@gmail.com
 - GitHub: [@Krushang004](https://github.com/Krushang004)
 - LinkedIn: [Krushang Prajapati](https://www.linkedin.com/in/krushang-prajapati-5b4a97324/)
-- X (Twitter): [@Krushang300506](https://x.com/Krushang300506)
-- Email: krushangrprajapati@gmail.com
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Krushang004/your-portfolio-repo/issues).
-
-## 🙏 Acknowledgments
-
-- Font Awesome for the icons
-- Google Fonts for the typography
-- All the open source libraries used in this project
-
-## 📈 Future Enhancements
-
-- [ ] Dark mode toggle
-- [ ] Blog section
-- [ ] Testimonials section
-- [ ] More interactive animations
-- [ ] Backend integration for contact form
-- [ ] Multi-language support
-
----
-
-⭐ If you found this project helpful, please give it a star on GitHub!
+- X: [@Krushang300506](https://x.com/Krushang300506)
