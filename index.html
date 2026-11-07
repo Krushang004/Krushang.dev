@@ -854,6 +854,117 @@ footer {
 @keyframes glitch2 { 0%,88%{transform:translateX(3px)} 93%{transform:translateX(-3px)} 100%{transform:translateX(3px)} }
 
 /* ============================================================
+   SKILL ORBIT
+   ============================================================ */
+.orbit-wrap {
+  width: 100%; max-width: 1000px; margin-bottom: 56px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+}
+.orbit {
+  --size: 540px; --core: 76px;
+  --d1: 190px; --d2: 340px; --d3: 490px;
+  position: relative;
+  width: var(--size); height: var(--size);
+  flex-shrink: 0;
+}
+.orbit::before {
+  content: ''; position: absolute; inset: 8%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(0,212,255,.10) 0%, rgba(0,212,255,.03) 45%, transparent 70%);
+}
+.orbit-core {
+  position: absolute; top: 50%; left: 50%;
+  width: var(--core); height: var(--core);
+  transform: translate(-50%,-50%);
+  display: grid; place-items: center;
+  border-radius: 14px; background: var(--terminal);
+  border: 1px solid var(--accent-border);
+  font-family: 'Orbitron', sans-serif; font-weight: 900;
+  font-size: calc(var(--core) * .26); letter-spacing: .08em; color: var(--accent);
+  animation: corePulse 3s ease-in-out infinite;
+  z-index: 2;
+}
+/* chip "pins" */
+.orbit-core::before {
+  content: ''; position: absolute; inset: -7px; border-radius: 18px;
+  border: 2px dotted rgba(0,212,255,.45);
+}
+.orbit-ring {
+  position: absolute; top: 50%; left: 50%;
+  width: var(--d); height: var(--d);
+  margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
+  border-radius: 50%;
+  border: 1px dashed rgba(0,212,255,var(--o));
+  animation: orbitSpin var(--t) linear infinite var(--dir);
+}
+/* glowing satellite riding each ring */
+.orbit-ring::after {
+  content: ''; position: absolute; top: -4px; left: 50%;
+  width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 12px 2px var(--accent);
+}
+.orbit-ring.r1 { --d: var(--d1); --t: 26s; --o: .5;  --dir: normal;  --cdir: reverse; }
+.orbit-ring.r2 { --d: var(--d2); --t: 44s; --o: .32; --dir: reverse; --cdir: normal; }
+.orbit-ring.r3 { --d: var(--d3); --t: 68s; --o: .2;  --dir: normal;  --cdir: reverse; }
+
+.o-node {
+  position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+  transform: rotate(var(--a)) translateX(calc(var(--d) / 2));
+}
+/* counter-spin keeps labels upright while the ring turns */
+.o-counter {
+  position: absolute; top: 0; left: 0; width: 0; height: 0;
+  animation: orbitSpin var(--t) linear infinite var(--cdir);
+}
+.o-chip {
+  position: absolute; top: 0; left: 0;
+  transform: translate(-50%,-50%) rotate(calc(-1 * var(--a)));
+  white-space: nowrap;
+  font-size: .74rem; font-weight: 500; color: var(--sub);
+  padding: 5px 12px; border-radius: 6px;
+  background: var(--terminal); border: 1px solid var(--border);
+  transition: color .25s, border-color .25s, box-shadow .25s, scale .25s;
+  cursor: default;
+}
+.r1 .o-chip { color: var(--text); border-color: var(--accent-border); }
+.o-chip:hover {
+  color: var(--text); border-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow); scale: 1.12;
+}
+.orbit:hover .orbit-ring, .orbit:hover .o-counter,
+.orbit.is-paused .orbit-ring, .orbit.is-paused .o-counter,
+.orbit.is-paused .orbit-core { animation-play-state: paused; }
+
+.orbit-legend {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 26px;
+  font-size: .72rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.orbit-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.orbit-legend i {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+.orbit-legend span:nth-child(2) i { opacity: .6; }
+.orbit-legend span:nth-child(3) i { opacity: .35; }
+
+@keyframes orbitSpin { to { transform: rotate(360deg); } }
+@keyframes corePulse {
+  0%,100% { box-shadow: 0 0 18px var(--accent-glow); }
+  50%     { box-shadow: 0 0 42px rgba(0,212,255,.45); }
+}
+@media(max-width: 820px) {
+  .orbit { --size: 450px; --core: 64px; --d1: 170px; --d2: 290px; --d3: 410px; }
+}
+@media(max-width: 560px) {
+  .orbit { --size: 300px; --core: 46px; --d1: 150px; --d2: 206px; --d3: 262px; }
+  .orbit-core::before { inset: -5px; border-radius: 14px; }
+  .o-chip { font-size: .6rem; padding: 3px 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring, .o-counter, .orbit-core { animation: none; }
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media(max-width:768px) {
@@ -1025,6 +1136,37 @@ footer {
   <div class="s-label reveal">SKILLS</div>
   <div class="section-rule reveal delay-1"></div>
   <h2 class="skills-heading reveal delay-1">Technical Arsenal.</h2>
+  <div class="orbit-wrap reveal delay-2">
+    <div class="orbit" aria-hidden="true">
+      <div class="orbit-core">KP</div>
+      <div class="orbit-ring r1">
+        <div class="o-node" style="--a:45deg"><div class="o-counter"><span class="o-chip">Verilog HDL</span></div></div>
+        <div class="o-node" style="--a:135deg"><div class="o-counter"><span class="o-chip">Vivado</span></div></div>
+        <div class="o-node" style="--a:225deg"><div class="o-counter"><span class="o-chip">Basys 3</span></div></div>
+        <div class="o-node" style="--a:315deg"><div class="o-counter"><span class="o-chip">FSM Design</span></div></div>
+      </div>
+      <div class="orbit-ring r2">
+        <div class="o-node" style="--a:18deg"><div class="o-counter"><span class="o-chip">ESP32</span></div></div>
+        <div class="o-node" style="--a:90deg"><div class="o-counter"><span class="o-chip">ATmega32</span></div></div>
+        <div class="o-node" style="--a:162deg"><div class="o-counter"><span class="o-chip">AVR Assembly</span></div></div>
+        <div class="o-node" style="--a:234deg"><div class="o-counter"><span class="o-chip">UART</span></div></div>
+        <div class="o-node" style="--a:306deg"><div class="o-counter"><span class="o-chip">ESP32-CAM</span></div></div>
+      </div>
+      <div class="orbit-ring r3">
+        <div class="o-node" style="--a:0deg"><div class="o-counter"><span class="o-chip">Python</span></div></div>
+        <div class="o-node" style="--a:60deg"><div class="o-counter"><span class="o-chip">C</span></div></div>
+        <div class="o-node" style="--a:120deg"><div class="o-counter"><span class="o-chip">React</span></div></div>
+        <div class="o-node" style="--a:180deg"><div class="o-counter"><span class="o-chip">Firebase</span></div></div>
+        <div class="o-node" style="--a:240deg"><div class="o-counter"><span class="o-chip">Computer Vision</span></div></div>
+        <div class="o-node" style="--a:300deg"><div class="o-counter"><span class="o-chip">Git</span></div></div>
+      </div>
+    </div>
+    <div class="orbit-legend">
+      <span><i></i>Inner · HDL &amp; FPGA</span>
+      <span><i></i>Middle · Embedded</span>
+      <span><i></i>Outer · Software &amp; AI</span>
+    </div>
+  </div>
   <div class="skills-grid">
     <div class="skill-card reveal delay-1">
       <p class="skill-group-title">HDL &amp; FPGA</p>
@@ -1525,6 +1667,12 @@ window.addEventListener('load', () => {
     }, i * 150);
   });
 });
+
+/* Pause skill orbit when off-screen */
+const orbitEl = document.querySelector('.orbit');
+if (orbitEl && 'IntersectionObserver' in window) {
+  new IntersectionObserver(([e]) => orbitEl.classList.toggle('is-paused', !e.isIntersecting)).observe(orbitEl);
+}
 
 /* Smooth scroll */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
